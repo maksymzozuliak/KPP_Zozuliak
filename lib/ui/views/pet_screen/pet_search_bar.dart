@@ -7,12 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 class PetSearchBar extends StatelessWidget {
 
   final double height;
+  final Function(String) onSearchButtonTap;
+  final TextEditingController textEditingController = TextEditingController();
 
-  const PetSearchBar(
-    {super.key, required this.height}
+  PetSearchBar(
+    {super.key, required this.height, required this.onSearchButtonTap,}
   );
 
-  get textEditingController => null;
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +55,7 @@ class PetSearchBar extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () {
-              // Handle search action
-            },
+            onTap: () => onSearchButtonTap(textEditingController.text),
             child: Container(
               height: height,
               width: height,
