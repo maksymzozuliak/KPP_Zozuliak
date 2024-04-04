@@ -1,4 +1,5 @@
 import 'package:adopt_a_pet/ioc/bootstrapper.dart';
+import 'package:adopt_a_pet/presentation/bloc/pet_info_screen_bloc.dart';
 import 'package:adopt_a_pet/presentation/bloc/pet_screen_bloc.dart';
 import 'package:adopt_a_pet/ui/views/pet_screen/pet_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<PetInfoScreenBloc>(
+          create: (BuildContext context) => PetInfoScreenBloc(),
+        ),
         BlocProvider<PetScreenBloc>(
           create: (BuildContext context) => PetScreenBloc(),
         ),

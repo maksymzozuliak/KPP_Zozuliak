@@ -1,10 +1,15 @@
 import 'package:adopt_a_pet/data/models/attributes.dart';
 import 'package:adopt_a_pet/data/models/breeds.dart';
+import 'package:adopt_a_pet/data/models/pet.dart';
 import 'package:adopt_a_pet/data/models/pet_type_enum.dart';
+import 'package:adopt_a_pet/extensions/location_extensions.dart';
 import 'package:adopt_a_pet/presentation/bloc/pet_screen_bloc.dart';
 import 'package:adopt_a_pet/presentation/events/pet_screen/get_list_by_name_pet_screen_event.dart';
 import 'package:adopt_a_pet/presentation/events/pet_screen/get_list_pet_screen_event.dart';
 import 'package:adopt_a_pet/presentation/states/pet_screen/pet_screen_state.dart';
+import 'package:adopt_a_pet/ui/dialog_service.dart';
+import 'package:adopt_a_pet/ui/views/pet_info_screen/pet_info_screen.dart';
+import 'package:adopt_a_pet/ui/views/pet_screen/location_dialog.dart';
 import 'package:adopt_a_pet/ui/views/pet_screen/location_widget.dart';
 import 'package:adopt_a_pet/ui/views/pet_screen/pet_grid/pet_grid.dart';
 import 'package:adopt_a_pet/ui/views/pet_screen/pet_search_bar.dart';
@@ -38,6 +43,7 @@ class PetScreen extends StatelessWidget {
     return Expanded(
       child: PetGrid(
         petList: state.petList!,
+        onPetTap: (pet) => navigateToPetInfoPage(context, pet),
       ),
     );
   }
@@ -59,17 +65,17 @@ class PetScreen extends StatelessWidget {
   }
 
   Widget _getErrorContent() {
-    return Text("_getErrorContent");
+    return Expanded(
+        child: Center(
+            child: Body2Text(
+                text: "Nothing found", textColor: const Color(0xFF5F5B5B))));
   }
 
   Widget _getEmptyContent() {
     return Expanded(
         child: Center(
             child: Body2Text(
-                text: "Nothing found",
-                textColor: const Color(0xFF5F5B5B)
-            ))
-    );
+                text: "Nothing found", textColor: const Color(0xFF5F5B5B))));
   }
 
   @override
@@ -88,7 +94,18 @@ class PetScreen extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: LocationWidget(),
+                  child: LocationWidget(
+                    selectedLocation: state.selectedLocation,
+                    onTap: () =>
+                        DialogService.showAlertDialog(
+                          context: context,
+                          dialog: LocationDialog(
+                              selectedLocation: state.selectedLocation,
+                              onLocationSelected: (location) => _petScreenBloc.add(GetListPetScreenEvent(page: 1, location: location)),
+                              onSearchButtonTap: (location)=>{},
+                              locationList: LocationExtensions.locationList(),),
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 18.0,
@@ -156,5 +173,11 @@ class PetScreen extends StatelessWidget {
         name: searchText,
       ),
     );
+  }
+
+  void navigateToPetInfoPage(BuildContext context, Pet pet) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+      return PetInfoScreen(pet: pet);
+    }));
   }
 }

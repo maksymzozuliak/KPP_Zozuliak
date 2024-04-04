@@ -12,33 +12,36 @@ import 'package:bloc/bloc.dart';
 class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
   late PetManagerBase _petManager;
 
-  PetScreenBloc(): super(PetScreenState.createInitial()) {
+  PetScreenBloc() : super(PetScreenState.createInitial()) {
     _petManager = SimpleIoCContainer.resolve<PetManagerBase>();
     on<GetListPetScreenEvent>(_onGetListPetScreenEvent);
     on<GetListByNamePetScreenEvent>(_onGetListByNamePetScreenEvent);
   }
 
   FutureOr<void> _onGetListPetScreenEvent(
-      GetListPetScreenEvent event,
-      Emitter<PetScreenState> emit,
-      ) async {
+    GetListPetScreenEvent event,
+    Emitter<PetScreenState> emit,
+  ) async {
     emit(
       PetScreenState.createForGetList(
         petListLoadingState: DataLoadingState.loading,
         petList: null,
-        selectedPetType: event.petType
+        selectedPetType: event.petType ?? state.selectedPetType,
+        selectedLocation: event.location ?? state.selectedLocation,
       ),
     );
     try {
       // await Future.delayed(const Duration(seconds: 5));
-      final petList = await _petManager.getPetList(event.petType.name, event.page, null);
+      final petList =
+          await _petManager.getPetList(event.petType?.name ?? state.selectedPetType.name, event.page, null);
 
       if (petList.isNotEmpty) {
         emit(
           PetScreenState.createForGetList(
             petListLoadingState: DataLoadingState.data,
             petList: petList,
-            selectedPetType: event.petType,
+            selectedPetType: event.petType ?? state.selectedPetType,
+            selectedLocation: event.location ?? state.selectedLocation,
           ),
         );
       } else {
@@ -46,7 +49,8 @@ class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
           PetScreenState.createForGetList(
             petListLoadingState: DataLoadingState.empty,
             petList: petList,
-            selectedPetType: event.petType,
+            selectedPetType: event.petType ?? state.selectedPetType,
+            selectedLocation: event.location ?? state.selectedLocation,
           ),
         );
       }
@@ -56,26 +60,29 @@ class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
         PetScreenState.createForGetList(
           petListLoadingState: DataLoadingState.error,
           petList: null,
-          selectedPetType: event.petType,
+          selectedPetType: event.petType ?? state.selectedPetType,
+          selectedLocation: event.location ?? state.selectedLocation,
         ),
       );
     }
   }
 
   FutureOr<void> _onGetListByNamePetScreenEvent(
-      GetListByNamePetScreenEvent event,
-      Emitter<PetScreenState> emit,
-      ) async {
+    GetListByNamePetScreenEvent event,
+    Emitter<PetScreenState> emit,
+  ) async {
     emit(
       PetScreenState.createForGetList(
-          petListLoadingState: DataLoadingState.loading,
-          petList: null,
-          selectedPetType: state.selectedPetType
+        petListLoadingState: DataLoadingState.loading,
+        petList: null,
+        selectedPetType: state.selectedPetType,
+        selectedLocation: state.selectedLocation,
       ),
     );
     try {
       // await Future.delayed(const Duration(seconds: 5));
-      final petList = await _petManager.getPetList(state.selectedPetType.name, event.page, event.name.isEmpty ? null : event.name);
+      final petList = await _petManager.getPetList(state.selectedPetType.name,
+          event.page, event.name.isEmpty ? null : event.name);
 
       if (petList.isNotEmpty) {
         emit(
@@ -83,6 +90,7 @@ class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
             petListLoadingState: DataLoadingState.data,
             petList: petList,
             selectedPetType: state.selectedPetType,
+            selectedLocation: state.selectedLocation,
           ),
         );
       } else {
@@ -91,6 +99,7 @@ class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
             petListLoadingState: DataLoadingState.empty,
             petList: petList,
             selectedPetType: state.selectedPetType,
+            selectedLocation: state.selectedLocation,
           ),
         );
       }
@@ -101,6 +110,7 @@ class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
           petListLoadingState: DataLoadingState.error,
           petList: null,
           selectedPetType: state.selectedPetType,
+          selectedLocation: state.selectedLocation,
         ),
       );
     }

@@ -6,11 +6,12 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../data/models/pet.dart';
 
 class PetGrid extends StatelessWidget {
-
   final List<Pet> petList;
+  final Function(Pet) onPetTap;
 
   const PetGrid({
-    required this.petList
+    required this.petList,
+    required this.onPetTap,
   });
 
   @override
@@ -25,7 +26,10 @@ class PetGrid extends StatelessWidget {
       ),
       itemCount: petList.length,
       itemBuilder: (context, index) {
-        return PetItem(pet: petList[index]);
+        return PetItem(
+          pet: petList[index],
+          onPetTap: onPetTap,
+        );
       },
     );
   }
