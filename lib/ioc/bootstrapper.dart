@@ -10,12 +10,15 @@ import 'package:adopt_a_pet/data/managers/organization_manager.dart';
 import 'package:adopt_a_pet/data/managers/pet_manager.dart';
 import 'package:adopt_a_pet/ioc/simple_ioc_container.dart';
 
-final class Bootstrapper {
+/// Class responsible for initializing application dependencies.
+class Bootstrapper {
+  /// Initializes application dependencies.
   static void initialize() {
     _registerServices();
     _registerManagers();
   }
 
+  /// Registers API services with the IoC container.
   static void _registerServices() {
     SimpleIoCContainer.register<RequestService, DioRequestService>(
         DioRequestService());
@@ -27,8 +30,8 @@ final class Bootstrapper {
         OrganizationApiService(SimpleIoCContainer.resolve<RequestService>()));
   }
 
+  /// Registers data managers with the IoC container.
   static void _registerManagers() {
-
     SimpleIoCContainer.register<PetManagerBase, PetManager>(
         PetManager(SimpleIoCContainer.resolve<PetListApiServiceBase>()));
 

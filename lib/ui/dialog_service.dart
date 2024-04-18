@@ -6,7 +6,7 @@ class DialogService {
     required Widget dialog,
     insetPadding = 0.0,
     contentPadding = 0.0,
-    borderRadius = 0.0,
+    borderRadius = 16.0,
     alignment = Alignment.center,
   }) {
     showDialog<void>(

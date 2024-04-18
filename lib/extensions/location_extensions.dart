@@ -1,11 +1,14 @@
 import 'package:adopt_a_pet/data/models/location.dart';
 
+/// Extension methods on [Location] for utility functions.
 extension LocationExtensions on Location {
+  /// Represents the "All" location option.
   static final Location _all = Location(
     name: "All",
     searchName: null,
   );
 
+  /// Represents a list of predefined locations.
   static final List<Location> _locationList = [
     _all,
     Location(name: "Alabama, USA", searchName: "Alabama"),
@@ -60,13 +63,13 @@ extension LocationExtensions on Location {
     Location(name: "Wyoming, USA", searchName: "Wyoming"),
   ];
 
+  /// Retrieves the "All" location option.
   static Location all() {
     return _all;
   }
 
+  /// Retrieves the list of predefined locations.
   static List<Location> locationList() {
-    // List<Location> sortedList = List.from(_locationList);
-    // sortedList.sort((a, b) => a.name.compareTo(b.name));
     return _locationList;
   }
 }

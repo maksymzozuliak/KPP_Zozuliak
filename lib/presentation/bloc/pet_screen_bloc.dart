@@ -1,6 +1,6 @@
 import 'dart:async';
+
 import 'package:adopt_a_pet/data/managers/base/pet_manager_base.dart';
-import 'package:adopt_a_pet/data/managers/pet_manager.dart';
 import 'package:adopt_a_pet/ioc/simple_ioc_container.dart';
 import 'package:adopt_a_pet/presentation/events/pet_screen/get_list_by_name_pet_screen_event.dart';
 import 'package:adopt_a_pet/presentation/events/pet_screen/get_list_pet_screen_event.dart';
@@ -9,19 +9,23 @@ import 'package:adopt_a_pet/presentation/states/pet_screen/pet_screen_state.dart
 import 'package:adopt_a_pet/utils/data_loading_state.dart';
 import 'package:bloc/bloc.dart';
 
+/// A BLoC (Business Logic Component) responsible for managing state and handling events
+/// related to the pet screen.
 class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
   late PetManagerBase _petManager;
 
+  /// Initializes the [PetScreenBloc] with the initial state and sets up event handlers.
   PetScreenBloc() : super(PetScreenState.createInitial()) {
     _petManager = SimpleIoCContainer.resolve<PetManagerBase>();
     on<GetListPetScreenEvent>(_onGetListPetScreenEvent);
     on<GetListByNamePetScreenEvent>(_onGetListByNamePetScreenEvent);
   }
 
-  FutureOr<void> _onGetListPetScreenEvent(
-    GetListPetScreenEvent event,
-    Emitter<PetScreenState> emit,
-  ) async {
+  /// Handles the [GetListPetScreenEvent] by loading the list of pets from the data layer.
+  Future<void> _onGetListPetScreenEvent(
+      GetListPetScreenEvent event,
+      Emitter<PetScreenState> emit,
+      ) async {
     emit(
       PetScreenState.createForGetList(
         petListLoadingState: DataLoadingState.loading,
@@ -31,9 +35,11 @@ class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
       ),
     );
     try {
-      // await Future.delayed(const Duration(seconds: 5));
-      final petList =
-          await _petManager.getPetList(event.petType?.name ?? state.selectedPetType.name, event.page, null);
+      final petList = await _petManager.getPetList(
+        event.petType?.name ?? state.selectedPetType.name,
+        event.page,
+        null,
+      );
 
       if (petList.isNotEmpty) {
         emit(
@@ -67,10 +73,11 @@ class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
     }
   }
 
-  FutureOr<void> _onGetListByNamePetScreenEvent(
-    GetListByNamePetScreenEvent event,
-    Emitter<PetScreenState> emit,
-  ) async {
+  /// Handles the [GetListByNamePetScreenEvent] by loading the list of pets filtered by name from the data layer.
+  Future<void> _onGetListByNamePetScreenEvent(
+      GetListByNamePetScreenEvent event,
+      Emitter<PetScreenState> emit,
+      ) async {
     emit(
       PetScreenState.createForGetList(
         petListLoadingState: DataLoadingState.loading,
@@ -80,9 +87,11 @@ class PetScreenBloc extends Bloc<PetScreenEvent, PetScreenState> {
       ),
     );
     try {
-      // await Future.delayed(const Duration(seconds: 5));
-      final petList = await _petManager.getPetList(state.selectedPetType.name,
-          event.page, event.name.isEmpty ? null : event.name);
+      final petList = await _petManager.getPetList(
+        state.selectedPetType.name,
+        event.page,
+        event.name.isEmpty ? null : event.name,
+      );
 
       if (petList.isNotEmpty) {
         emit(

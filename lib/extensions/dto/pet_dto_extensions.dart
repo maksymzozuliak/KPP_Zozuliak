@@ -8,7 +8,9 @@ import 'package:adopt_a_pet/extensions/dto/pet_colors_dto_extensions.dart';
 import 'package:adopt_a_pet/extensions/dto/photo_dto_extensions.dart';
 import 'package:adopt_a_pet/extensions/string_extensions.dart';
 
+/// Extension methods on [PetDto] for converting it to [Pet] model.
 extension PetDtoExtensions on PetDto {
+  /// Converts a [PetDto] instance to a [Pet] model.
   Pet toModel() {
     final type = this.type.toPetTypeEnum();
     final breeds = this.breeds.toModel();

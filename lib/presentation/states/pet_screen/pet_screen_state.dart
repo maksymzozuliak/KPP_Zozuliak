@@ -4,12 +4,14 @@ import 'package:adopt_a_pet/data/models/pet_type_enum.dart';
 import 'package:adopt_a_pet/extensions/location_extensions.dart';
 import 'package:adopt_a_pet/utils/data_loading_state.dart';
 
+/// Represents the state of the pet screen.
 class PetScreenState {
-  DataLoadingState petListLoadingState;
-  List<Pet>? petList;
-  PetType selectedPetType;
-  Location selectedLocation;
+  final DataLoadingState petListLoadingState;
+  final List<Pet>? petList;
+  final PetType selectedPetType;
+  final Location selectedLocation;
 
+  /// Constructor for PetScreenState.
   PetScreenState({
     required this.petListLoadingState,
     required this.petList,
@@ -17,7 +19,8 @@ class PetScreenState {
     required this.selectedLocation,
   });
 
-  static createInitial() {
+  /// Creates an initial state for the pet screen.
+  static PetScreenState createInitial() {
     return PetScreenState(
       petListLoadingState: DataLoadingState.none,
       petList: null,
@@ -26,11 +29,12 @@ class PetScreenState {
     );
   }
 
-  static createForGetList({
+  /// Creates a state after attempting to get a list of pets.
+  static PetScreenState createForGetList({
     required DataLoadingState petListLoadingState,
     required List<Pet>? petList,
     required PetType selectedPetType,
-    required Location selectedLocation
+    required Location selectedLocation,
   }) {
     return PetScreenState(
       petListLoadingState: petListLoadingState,
